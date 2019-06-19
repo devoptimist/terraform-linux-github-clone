@@ -1,9 +1,17 @@
 #!/bin/bash
 cd ~/
+if hash yum; then
+  sudo yum install -y git
+elif hash apt; then
+  sudo apt-get update
+  sudo apt-get install -y git
+fi
 %{ if git_key != "" }
 cat << EOF >> /tmp/git_tmp_key
 ${ git_key }
 EOF
+chmod 600 /tmp/git_tmp_key
+
 if [[ ! -d ~/.ssh/ ]]; then
   mkdir  ~/.ssh
   chmod 700 ~/.ssh
@@ -16,6 +24,7 @@ Host github.com
    HostName github.com
    User git
 EOF
+chmod 600 ~/.ssh/config
 %{ endif }
 
 %{ if git_repo != "" }
@@ -23,6 +32,9 @@ git clone ${git_repo}
 %{ endif }
 
 %{ if git_key != "" }
-rm -rf /tmp/git_tmp_key
-rm -rf ~/.ssh/config
+rm -f /tmp/git_tmp_key
+rm -f ~/.ssh/config
 %{ endif }
+
+SCRIPT="$( cd "$(dirname "$0")" ; pwd -P )/$0"
+rm -f $SCRIPT
