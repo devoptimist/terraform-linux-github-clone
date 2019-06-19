@@ -35,6 +35,4 @@ git clone ${git_repo}
 rm -f /tmp/git_tmp_key
 rm -f ~/.ssh/config
 %{ endif }
-
-SCRIPT="$( cd "$(dirname "$0")" ; pwd -P )/$0"
-rm -f $SCRIPT
+rm -f /tmp/git_clone.sh
